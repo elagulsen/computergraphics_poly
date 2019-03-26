@@ -3,34 +3,46 @@ from matrix import *
 
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    pass
+    add_edge(polygons, x0, y0, z0, x1, y1, z1)
+    add_point(polygons, x1, y1, z1, x2, y2, z2)
+    add_points(polygons, x2, y2, z2, x0, y0, z0)
 
 def draw_polygons( polygons, screen, color ):
-    pass
+    if len(polygons) < 3:
+        print 'Need at least 2 points to draw'
+        return
+
+    # add backface culling later!!
+    
+    point = 0
+    while point < len(polygons) - 1:
+        draw_line( int(polygons[point][0]),
+                   int(polygons[point][1]),
+                   int(polygons[point+1][0]),
+                   int(polygons[point+1][1]),
+                   screen, color)    
+        point+= 2
 
 
 def add_box( polygons, x, y, z, width, height, depth ):
     x1 = x + width
     y1 = y - height
     z1 = z - depth
-
     #front
-    add_edge(polygons, x, y, z, x1, y, z)
-    add_edge(polygons, x, y1, z, x1, y1, z)
-    add_edge(polygons, x1, y, z, x1, y1, z)
-    add_edge(polygons, x, y, z, x, y1, z)
+    add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z)
+    add_polygon(polygons, x1, y1, z, x1, y, z, x, y, z)
+    #right side
+    add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z)
+    add_polygon(polygons, x, y1, z, x, y, z, x, y, z1)
+    #back side
+    add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y1, z1)
+    add_polygon(polygons, x, y1, z1, x, y, z1, x1, y, z1)
+    #left side
 
-    #back
-    add_edge(polygons, x, y, z1, x1, y, z1)
-    add_edge(polygons, x, y1, z1, x1, y1, z1)
-    add_edge(polygons, x1, y, z1, x1, y1, z1)
-    add_edge(polygons, x, y, z1, x, y1, z1)
+    #top
 
-    #sides
-    add_edge(polygons, x, y, z, x, y, z1)
-    add_edge(polygons, x1, y, z, x1, y, z1)
-    add_edge(polygons, x, y1, z, x, y1, z1)
-    add_edge(polygons, x1, y1, z, x1, y1, z1)
+    #bottom
+
 
 def add_sphere(polygons, cx, cy, cz, r, step ):
     points = generate_sphere(cx, cy, cz, r, step)
