@@ -3,25 +3,49 @@ from matrix import *
 
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    add_edge(polygons, x0, y0, z0, x1, y1, z1)
-    add_point(polygons, x1, y1, z1, x2, y2, z2)
-    add_points(polygons, x2, y2, z2, x0, y0, z0)
+    add_point(polygons, x0, y0, z0)
+    add_point(polygons, x1, y1, z1)
+    add_point(polygons, x2, y2, z2)
 
+def cross_product( a, b):
+    cross = [7, 7, 7]
+    cross[0] = a[1]*b[2] - a[2]*b[1]
+    cross[1] = a[2]*b[0] - a[0]*b[2]
+    cross[2] = a[0]*b[1] - a[1]*b[0]
+    return cross
+    
 def draw_polygons( polygons, screen, color ):
     if len(polygons) < 3:
         print 'Need at least 2 points to draw'
         return
 
-    # add backface culling later!!
-    
     point = 0
-    while point < len(polygons) - 1:
-        draw_line( int(polygons[point][0]),
-                   int(polygons[point][1]),
-                   int(polygons[point+1][0]),
-                   int(polygons[point+1][1]),
-                   screen, color)    
-        point+= 2
+    while point < len(polygons) - 2:
+        a = [polygons[point][0] - polygons[point + 1][0],
+                 polygons[point][1] - polygons[point + 1][1],
+                 polygons[point][2] - polygons[point + 1][2]]
+        b = [polygons[point+1][0] - polygons[point + 2][0],
+                 polygons[point+1][1] - polygons[point + 2][1],
+                 polygons[point+1][2] - polygons[point + 2][2]]
+        normal = cross_product( a, b)
+        print normal
+        if normal[2] >= 0:
+            draw_line( int(polygons[point][0]),
+                           int(polygons[point][1]),
+                           int(polygons[point+1][0]),
+                           int(polygons[point+1][1]),
+                           screen, color)
+            draw_line( int(polygons[point][0]),
+                           int(polygons[point][1]),
+                           int(polygons[point+1][0]),
+                           int(polygons[point+1][1]),
+                           screen, color)
+            draw_line( int(polygons[point+1][0]),
+                           int(polygons[point+1][1]),
+                           int(polygons[point+2][0]),
+                           int(polygons[point+2][1]),
+                           screen, color)
+        point+= 3
 
 
 def add_box( polygons, x, y, z, width, height, depth ):
@@ -31,19 +55,22 @@ def add_box( polygons, x, y, z, width, height, depth ):
     #front
     add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z)
     add_polygon(polygons, x1, y1, z, x1, y, z, x, y, z)
-    #right side
+    #back
+    add_polygon(polygons, x, y, z1, x, y1, z1, x1, y1, z1)
+    add_polygon(polygons, x1, y1, z1, x1, y, z1, x, y, z1)    
+    #top
+    add_polygon(polygons, x, y, z1, x, y, z, x1, y, z)
+    add_polygon(polygons, x1, y, z, x1, y, z1, x, y, z1)
+    #bottom
+    add_polygon(polygons, x, y1, z1, x, y1, z, x1, y1, z)
+    add_polygon(polygons, x1, y1, z, x1, y1, z1, x, y1, z1)
+    #left side
     add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z)
     add_polygon(polygons, x, y1, z, x, y, z, x, y, z1)
-    #back side
-    add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y1, z1)
-    add_polygon(polygons, x, y1, z1, x, y, z1, x1, y, z1)
-    #left side
-
-    #top
-
-    #bottom
-
-
+    #right side
+    add_polygon(polygons, x1, y, z1, x1, y1, z1, x1, y1, z)
+    add_polygon(polygons, x1, y1, z, x1, y, z, x1, y, z1)
+    
 def add_sphere(polygons, cx, cy, cz, r, step ):
     points = generate_sphere(cx, cy, cz, r, step)
 
@@ -57,7 +84,7 @@ def add_sphere(polygons, cx, cy, cz, r, step ):
         for longt in range(longt_start, longt_stop+1):
             index = lat * step + longt
 
-            add_edge(polygons, points[index][0],
+            add_polygon(polygons, points[index][0],
                      points[index][1],
                      points[index][2],
                      points[index][0]+1,
