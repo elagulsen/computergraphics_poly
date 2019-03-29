@@ -24,9 +24,9 @@ def draw_polygons( polygons, screen, color ):
         a = [polygons[point][0] - polygons[point + 1][0],
                  polygons[point][1] - polygons[point + 1][1],
                  polygons[point][2] - polygons[point + 1][2]]
-        b = [polygons[point+1][0] - polygons[point + 2][0],
-                 polygons[point+1][1] - polygons[point + 2][1],
-                 polygons[point+1][2] - polygons[point + 2][2]]
+        b = [polygons[point+1][0] - polygons[point+2][0],
+                 polygons[point+1][1] - polygons[point+2][1],
+                 polygons[point+1][2] - polygons[point+2][2]]
         normal = cross_product( a, b)
         print normal
         if normal[2] >= 0:
@@ -37,8 +37,8 @@ def draw_polygons( polygons, screen, color ):
                            screen, color)
             draw_line( int(polygons[point][0]),
                            int(polygons[point][1]),
-                           int(polygons[point+1][0]),
-                           int(polygons[point+1][1]),
+                           int(polygons[point+2][0]),
+                           int(polygons[point+2][1]),
                            screen, color)
             draw_line( int(polygons[point+1][0]),
                            int(polygons[point+1][1]),
@@ -56,20 +56,20 @@ def add_box( polygons, x, y, z, width, height, depth ):
     add_polygon(polygons, x, y, z, x, y1, z, x1, y1, z)
     add_polygon(polygons, x1, y1, z, x1, y, z, x, y, z)
     #back
-    add_polygon(polygons, x, y, z1, x, y1, z1, x1, y1, z1)
-    add_polygon(polygons, x1, y1, z1, x1, y, z1, x, y, z1)    
+    add_polygon(polygons, x1, y1, z1, x, y1, z1, x, y, z1)
+    add_polygon(polygons, x, y, z1, x1, y, z1, x1, y1, z1)    
     #top
     add_polygon(polygons, x, y, z1, x, y, z, x1, y, z)
     add_polygon(polygons, x1, y, z, x1, y, z1, x, y, z1)
     #bottom
-    add_polygon(polygons, x, y1, z1, x, y1, z, x1, y1, z)
-    add_polygon(polygons, x1, y1, z, x1, y1, z1, x, y1, z1)
+    add_polygon(polygons, x1, y1, z, x, y1, z, x, y1, z1)
+    add_polygon(polygons, x, y1, z1, x1, y1, z1, x1, y1, z)
     #left side
     add_polygon(polygons, x, y, z1, x, y1, z1, x, y1, z)
     add_polygon(polygons, x, y1, z, x, y, z, x, y, z1)
     #right side
-    add_polygon(polygons, x1, y, z1, x1, y1, z1, x1, y1, z)
-    add_polygon(polygons, x1, y1, z, x1, y, z, x1, y, z1)
+    add_polygon(polygons, x1, y1, z, x1, y1, z1, x1, y, z1)
+    add_polygon(polygons, x1, y, z1, x1, y, z, x1, y1, z)
     
 def add_sphere(polygons, cx, cy, cz, r, step ):
     points = generate_sphere(cx, cy, cz, r, step)
@@ -81,15 +81,15 @@ def add_sphere(polygons, cx, cy, cz, r, step ):
 
     step+= 1
     for lat in range(lat_start, lat_stop):
-        for longt in range(longt_start, longt_stop+1):
+        
+        for longt in range(longt_start, longt_stop+1, 3):
             index = lat * step + longt
 
             add_polygon(polygons, points[index][0],
-                     points[index][1],
-                     points[index][2],
-                     points[index][0]+1,
-                     points[index][1]+1,
-                     points[index][2]+1 )
+                            points[index][1], points[index][2],
+                            points[index+1][0], points[index+1][1],
+                            points[index+1][2], points[lat][0],
+                            points[lat][1], points[lat][2])
 
 def generate_sphere( cx, cy, cz, r, step ):
     points = []
