@@ -9,18 +9,12 @@ def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     
 def draw_polygons( polygons, screen, color ):
     if len(polygons) < 3:
-        print('Need at least 2 points to draw')
+        print 'Need at least 2 points to draw'
         return
 
     point = 0
     while point < len(polygons) - 2:
-        a = [polygons[point][0] - polygons[point + 1][0],
-                 polygons[point][1] - polygons[point + 1][1],
-                 polygons[point][2] - polygons[point + 1][2]]
-        b = [polygons[point+1][0] - polygons[point+2][0],
-                 polygons[point+1][1] - polygons[point+2][1],
-                 polygons[point+1][2] - polygons[point+2][2]]
-        normal = cross_product( a, b)
+
         if normal[2] >= 0: 
             draw_line( int(polygons[point][0]), int(polygons[point][1]),
                            int(polygons[point+1][0]), int(polygons[point+1][1]),
@@ -173,7 +167,7 @@ def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
 
 def draw_lines( matrix, screen, color ):
     if len(matrix) < 2:
-        print('Need at least 2 points to draw')
+        print 'Need at least 2 points to draw'
         return
 
     point = 0
