@@ -1,0 +1,30 @@
+#korbs
+sphere 
+190 155 0 25
+sphere 
+310 155 0 25
+ident
+scale
+1 1.5 0
+move
+0 -55 0 
+apply
+sphere
+250 250 0 100
+sphere
+135 245 0 25
+sphere
+365 245 0 25
+sphere
+230 250 0 10
+sphere
+270 250 0 10
+torus
+215 225 0 5 10
+torus
+285 225 0 5 10
+sphere
+250 205 0 10
+display
+save
+korbs.png
